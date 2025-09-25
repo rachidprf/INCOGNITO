@@ -230,10 +230,9 @@
                     <label for="typeService" class="required">Type de service utilisé :</label>
                     <select id="typeService" name="typeService" required>
                         <option value="">Sélectionnez un type de service</option>
-                        <option value="taxi">Taxi</option>
-                        <option value="vtc">VTC (Uber, Bolt, etc.)</option>
-                        <option value="transport_public">Transport public</option>
-                        <option value="autre">Autre</option>
+                        <option value="Grand_Taxi">Taxi</option>
+                        <option value="Petit_Taxi">Petit Taxi</option>
+                        
                     </select>
                 </div>
                 
@@ -317,7 +316,11 @@
                             <label for="tarifConformeNon">Non</label>
                         </div>
                     </div>
-                    <input type="text" id="tarifDetail" name="tarifDetail" placeholder="Détail (si non conforme)" style="margin-top: 10px; display: none;">
+                </div>
+				
+				<div class="form-group">
+                    <label for="lieux" class="required">tarif Detail :</label>
+                    <input type="text" id="tarifDetail" name="tarifDetail" >
                 </div>
                 
                 <div class="form-group">
@@ -346,15 +349,7 @@
     // Affichage du champ détail si "Non"
     document.querySelectorAll('input[name="tarifConforme"]').forEach(radio => {
       radio.addEventListener('change', function() {
-        const detailField = document.getElementById('tarifDetail');
-        if (this.value === 'Non') {
-          detailField.style.display = 'block';
-          detailField.required = true;
-        } else {
-          detailField.style.display = 'none';
-          detailField.required = false;
-          detailField.value = '';
-        }
+        
       });
     });
 

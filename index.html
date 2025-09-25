@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire enquête incognito</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input[type="text"], 
+        input[type="number"], 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox-item input {
+            width: auto;
+        }
+        
+        .btn-submit {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background-color: #2980b9;
+        }
+        
+        .required::after {
+            content: " *";
+            color: red;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Formulaire enquête incognito</h1>
+        
+        <form id="enqueteForm">
+            <div class="form-group">
+                <label for="enqueteur" class="required">Identifiant enquêteur :</label>
+                <input type="text" id="enqueteur" name="enqueteur" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dateHeure" class="required">Date et heure du trajet :</label>
+                <input type="text" id="dateHeure" name="dateHeure" placeholder="JJ/MM/AAAA HH:MM" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="typeService" class="required">Type de service utilisé :</label>
+                <input type="text" id="typeService" name="typeService" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="lieux" class="required">Lieu de départ / destination :</label>
+                <input type="text" id="lieux" name="lieux" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Chauffeur courtois ?</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="courtoisOui" name="courtois" value="oui" required>
+                        <label for="courtoisOui">Oui</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="courtoisNon" name="courtois" value="non">
+                        <label for="courtoisNon">Non</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Présentation du véhicule (propreté, odeur, confort) :</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="presentationTresBon" name="presentation" value="tres-bon" required>
+                        <label for="presentationTresBon">Très bon</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="presentationMoyen" name="presentation" value="moyen">
+                        <label for="presentationMoyen">Moyen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="presentationMauvais" name="presentation" value="mauvais">
+                        <label for="presentationMauvais">Mauvais</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Sécurité de conduite :</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="securiteTresSecurisee" name="securite" value="tres-securisee" required>
+                        <label for="securiteTresSecurisee">Très sécurisée</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="securiteMoyenne" name="securite" value="moyenne">
+                        <label for="securiteMoyenne">Moyenne</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="securiteRisquee" name="securite" value="risquee">
+                        <label for="securiteRisquee">Risquée</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tempsAttente" class="required">Temps d'attente avant départ (remplissage, station, etc.) :</label>
+                <input type="number" id="tempsAttente" name="tempsAttente" min="0" placeholder="minutes" required> min
+            </div>
+            
+            <div class="form-group">
+                <label>Tarif conforme à l'usage local ?</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="tarifConformeOui" name="tarifConforme" value="oui" required>
+                        <label for="tarifConformeOui">Oui</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="tarifConformeNon" name="tarifConforme" value="non">
+                        <label for="tarifConformeNon">Non</label>
+                    </div>
+                </div>
+                <input type="text" id="tarifDetail" name="tarifDetail" placeholder="Détail (si non conforme)" style="margin-top: 10px; display: none;">
+            </div>
+            
+            <div class="form-group">
+                <label for="dureeTrajet" class="required">Durée réelle du trajet :</label>
+                <input type="number" id="dureeTrajet" name="dureeTrajet" min="0" placeholder="minutes" required> min
+            </div>
+            
+            <div class="form-group">
+                <label for="observations">Éléments non conformes ou observations (remplissage excessif, dépassement vitesse, etc.) :</label>
+                <textarea id="observations" name="observations"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit">Soumettre l'enquête</button>
+        </form>
+    </div>
+
+    <script>
+        // Afficher/masquer le champ de détail tarif si "Non" est sélectionné
+        document.querySelectorAll('input[name="tarifConforme"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const detailField = document.getElementById('tarifDetail');
+                if (this.value === 'non') {
+                    detailField.style.display = 'block';
+                    detailField.required = true;
+                } else {
+                    detailField.style.display = 'none';
+                    detailField.required = false;
+                    detailField.value = '';
+                }
+            });
+        });
+        
+        // Gestion de la soumission du formulaire
+        document.getElementById('enqueteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Ici, vous pouvez ajouter le code pour traiter les données du formulaire
+            // Par exemple, les envoyer à un serveur ou les afficher dans la console
+            console.log("Formulaire soumis avec les données suivantes:");
+            
+            const formData = new FormData(this);
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            
+            alert("Enquête soumise avec succès !");
+            this.reset();
+            
+            // Réinitialiser l'affichage du champ de détail tarif
+            document.getElementById('tarifDetail').style.display = 'none';
+            document.getElementById('tarifDetail').required = false;
+        });
+    </script>
+</body>
+</html>

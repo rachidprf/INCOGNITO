@@ -7,14 +7,15 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
+            background-color: #f0f2f5;
             margin: 0;
             padding: 20px;
             color: #333;
+            line-height: 1.6;
         }
         
         .container {
@@ -22,16 +23,40 @@
             margin: 0 auto;
             background-color: white;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
         }
         
         h1 {
-            text-align: center;
             color: #2c3e50;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .form-section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 20px;
         }
         
         .form-group {
@@ -41,17 +66,27 @@
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
+            font-weight: 600;
+            color: #2c3e50;
         }
         
         input[type="text"], 
+        input[type="datetime-local"], 
         input[type="number"], 
-        textarea {
+        textarea, 
+        select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         
         textarea {
@@ -59,19 +94,20 @@
             resize: vertical;
         }
         
-        .checkbox-group {
+        .radio-group, .checkbox-group {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-top: 5px;
         }
         
-        .checkbox-item {
+        .radio-item, .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
         
-        .checkbox-item input {
+        .radio-item input, .checkbox-item input {
             width: auto;
         }
         
@@ -79,22 +115,56 @@
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 4px;
+            padding: 14px 30px;
+            font-size: 18px;
+            border-radius: 5px;
             cursor: pointer;
             display: block;
             margin: 30px auto 0;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            max-width: 300px;
+            font-weight: 600;
         }
         
         .btn-submit:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .btn-submit:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .required::after {
             content: " *";
-            color: red;
+            color: #e74c3c;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         
         @media (max-width: 600px) {
@@ -102,158 +172,237 @@
                 padding: 15px;
             }
             
-            .checkbox-group {
+            .form-section {
+                padding: 15px;
+            }
+            
+            .radio-group, .checkbox-group {
                 flex-direction: column;
                 gap: 10px;
             }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Formulaire enquête incognito</h1>
+        <header>
+            <h1>Formulaire enquête incognito</h1>
+            <p class="description">Grille d'enquête incognito (à remplir par les enquêteurs après chaque trajet)</p>
+        </header>
+        
+        <div id="message" class="message"></div>
         
         <form id="enqueteForm">
-            <div class="form-group">
-                <label for="enqueteur" class="required">Identifiant enquêteur :</label>
-                <input type="text" id="enqueteur" name="enqueteur" required>
+            <div class="form-section">
+                <h2>Informations générales</h2>
+                
+                <div class="form-group">
+                    <label for="enqueteur" class="required">Identifiant enquêteur :</label>
+                    <input type="text" id="enqueteur" name="enqueteur" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dateHeure" class="required">Date et heure du trajet :</label>
+                    <input type="datetime-local" id="dateHeure" name="dateHeure" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="typeService" class="required">Type de service utilisé :</label>
+                    <select id="typeService" name="typeService" required>
+                        <option value="">Sélectionnez un type de service</option>
+                        <option value="taxi">Taxi</option>
+                        <option value="vtc">VTC (Uber, Bolt, etc.)</option>
+                        <option value="transport_public">Transport public</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lieux" class="required">Lieu de départ / destination :</label>
+                    <input type="text" id="lieux" name="lieux" placeholder="Ex: Gare Nord → Centre-ville" required>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="dateHeure" class="required">Date et heure du trajet :</label>
-                <input type="text" id="dateHeure" name="dateHeure" placeholder="JJ/MM/AAAA HH:MM" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="typeService" class="required">Type de service utilisé :</label>
-                <input type="text" id="typeService" name="typeService" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="lieux" class="required">Lieu de départ / destination :</label>
-                <input type="text" id="lieux" name="lieux" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Chauffeur courtois ?</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="radio" id="courtoisOui" name="courtois" value="oui" required>
-                        <label for="courtoisOui">Oui</label>
+            <div class="form-section">
+                <h2>Évaluation du service</h2>
+                
+                <div class="form-group">
+                    <label>Chauffeur courtois ?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="courtoisOui" name="courtois" value="Oui" required>
+                            <label for="courtoisOui">Oui</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="courtoisNon" name="courtois" value="Non">
+                            <label for="courtoisNon">Non</label>
+                        </div>
                     </div>
-                    <div class="checkbox-item">
-                        <input type="radio" id="courtoisNon" name="courtois" value="non">
-                        <label for="courtoisNon">Non</label>
+                </div>
+                
+                <div class="form-group">
+                    <label>Présentation du véhicule (propreté, odeur, confort) :</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="presentationTresBon" name="presentation" value="Très bon" required>
+                            <label for="presentationTresBon">Très bon</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="presentationMoyen" name="presentation" value="Moyen">
+                            <label for="presentationMoyen">Moyen</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="presentationMauvais" name="presentation" value="Mauvais">
+                            <label for="presentationMauvais">Mauvais</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sécurité de conduite :</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="securiteTresSecurisee" name="securite" value="Très sécurisée" required>
+                            <label for="securiteTresSecurisee">Très sécurisée</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="securiteMoyenne" name="securite" value="Moyenne">
+                            <label for="securiteMoyenne">Moyenne</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="securiteRisquee" name="securite" value="Risquée">
+                            <label for="securiteRisquee">Risquée</label>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label>Présentation du véhicule (propreté, odeur, confort) :</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="radio" id="presentationTresBon" name="presentation" value="tres-bon" required>
-                        <label for="presentationTresBon">Très bon</label>
+            <div class="form-section">
+                <h2>Détails du trajet</h2>
+                
+                <div class="form-group">
+                    <label for="tempsAttente" class="required">Temps d'attente avant départ (remplissage, station, etc.) :</label>
+                    <input type="number" id="tempsAttente" name="tempsAttente" min="0" placeholder="minutes" required> min
+                </div>
+                
+                <div class="form-group">
+                    <label>Tarif conforme à l'usage local ?</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="tarifConformeOui" name="tarifConforme" value="Oui" required>
+                            <label for="tarifConformeOui">Oui</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="tarifConformeNon" name="tarifConforme" value="Non">
+                            <label for="tarifConformeNon">Non</label>
+                        </div>
                     </div>
-                    <div class="checkbox-item">
-                        <input type="radio" id="presentationMoyen" name="presentation" value="moyen">
-                        <label for="presentationMoyen">Moyen</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="radio" id="presentationMauvais" name="presentation" value="mauvais">
-                        <label for="presentationMauvais">Mauvais</label>
-                    </div>
+                    <input type="text" id="tarifDetail" name="tarifDetail" placeholder="Détail (si non conforme)" style="margin-top: 10px; display: none;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dureeTrajet" class="required">Durée réelle du trajet :</label>
+                    <input type="number" id="dureeTrajet" name="dureeTrajet" min="0" placeholder="minutes" required> min
+                </div>
+                
+                <div class="form-group">
+                    <label for="observations">Éléments non conformes ou observations (remplissage excessif, dépassement vitesse, etc.) :</label>
+                    <textarea id="observations" name="observations" placeholder="Décrivez ici tout élément notable..."></textarea>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label>Sécurité de conduite :</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="radio" id="securiteTresSecurisee" name="securite" value="tres-securisee" required>
-                        <label for="securiteTresSecurisee">Très sécurisée</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="radio" id="securiteMoyenne" name="securite" value="moyenne">
-                        <label for="securiteMoyenne">Moyenne</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="radio" id="securiteRisquee" name="securite" value="risquee">
-                        <label for="securiteRisquee">Risquée</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="tempsAttente" class="required">Temps d'attente avant départ (remplissage, station, etc.) :</label>
-                <input type="number" id="tempsAttente" name="tempsAttente" min="0" placeholder="minutes" required> min
-            </div>
-            
-            <div class="form-group">
-                <label>Tarif conforme à l'usage local ?</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="radio" id="tarifConformeOui" name="tarifConforme" value="oui" required>
-                        <label for="tarifConformeOui">Oui</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="radio" id="tarifConformeNon" name="tarifConforme" value="non">
-                        <label for="tarifConformeNon">Non</label>
-                    </div>
-                </div>
-                <input type="text" id="tarifDetail" name="tarifDetail" placeholder="Détail (si non conforme)" style="margin-top: 10px; display: none;">
-            </div>
-            
-            <div class="form-group">
-                <label for="dureeTrajet" class="required">Durée réelle du trajet :</label>
-                <input type="number" id="dureeTrajet" name="dureeTrajet" min="0" placeholder="minutes" required> min
-            </div>
-            
-            <div class="form-group">
-                <label for="observations">Éléments non conformes ou observations (remplissage excessif, dépassement vitesse, etc.) :</label>
-                <textarea id="observations" name="observations"></textarea>
-            </div>
-            
-            <button type="submit" class="btn-submit">Soumettre l'enquête</button>
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="submitText">Soumettre l'enquête</span>
+            </button>
         </form>
     </div>
 
     <script>
-        // Afficher/masquer le champ de détail tarif si "Non" est sélectionné
-        document.querySelectorAll('input[name="tarifConforme"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const detailField = document.getElementById('tarifDetail');
-                if (this.value === 'non') {
-                    detailField.style.display = 'block';
-                    detailField.required = true;
-                } else {
-                    detailField.style.display = 'none';
-                    detailField.required = false;
-                    detailField.value = '';
-                }
-            });
-        });
+        // Configuration pour Google Sheets
+        // REMPLACEZ CETTE URL PAR CELLE DE VOTRE WEB APP GOOGLE APPS SCRIPT
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxcOMpVMNDVWxTU5HFecxOocWKDqubNvI130k86v1eF2xgzfGpHYJG8Epgqr7WzwEkY/exec';
         
-        // Gestion de la soumission du formulaire
-        document.getElementById('enqueteForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Ici, vous pouvez ajouter le code pour traiter les données du formulaire
-            // Par exemple, les envoyer à un serveur ou les afficher dans la console
-            console.log("Formulaire soumis avec les données suivantes:");
-            
-            const formData = new FormData(this);
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-            
-            alert("Enquête soumise avec succès !");
-            this.reset();
-            
-            // Réinitialiser l'affichage du champ de détail tarif
-            document.getElementById('tarifDetail').style.display = 'none';
-            document.getElementById('tarifDetail').required = false;
+       
+    // Affichage du champ détail si "Non"
+    document.querySelectorAll('input[name="tarifConforme"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const detailField = document.getElementById('tarifDetail');
+        if (this.value === 'Non') {
+          detailField.style.display = 'block';
+          detailField.required = true;
+        } else {
+          detailField.style.display = 'none';
+          detailField.required = false;
+          detailField.value = '';
+        }
+      });
+    });
+
+    // Pré-remplir la date/heure
+    document.getElementById('dateHeure').value = new Date().toISOString().slice(0,16);
+
+    // Gestion soumission
+    document.getElementById('enqueteForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      const submitText = document.getElementById('submitText');
+      const messageDiv = document.getElementById('message');
+
+      submitBtn.disabled = true;
+      submitText.innerHTML = '<span class="loading"></span> Envoi en cours...';
+
+      try {
+        const formData = new FormData(this);
+
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: formData
         });
-    </script>
+
+        const result = await response.json();
+
+        if (result.result === 'success') {
+          messageDiv.textContent = 'Enquête soumise avec succès !';
+          messageDiv.className = 'message success';
+          messageDiv.style.display = 'block';
+          this.reset();
+          document.getElementById('tarifDetail').style.display = 'none';
+          document.getElementById('dateHeure').value = new Date().toISOString().slice(0,16);
+        } else {
+          throw new Error(result.error || 'Erreur inconnue');
+        }
+
+      } catch (error) {
+        messageDiv.textContent = 'Erreur lors de l\'envoi : ' + error.message;
+        messageDiv.className = 'message error';
+        messageDiv.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitText.textContent = 'Soumettre l\'enquête';
+        setTimeout(() => { messageDiv.style.display = 'none'; }, 5000);
+      }
+    });
+  </script>
 </body>
 </html>
